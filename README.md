@@ -1,2 +1,2 @@
-# zll.com
-blog
+# domain.com
+my blog
