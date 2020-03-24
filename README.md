@@ -1,2 +1,2 @@
-# domain.com
+# My blog
 my blog
