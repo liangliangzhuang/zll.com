@@ -77,20 +77,77 @@
     </item>
     
     <item>
-      <title>zzz</title>
-      <link>/post/zzz/</link>
-      <pubDate>Thu, 26 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>/post/zzz/</guid>
-      <description>&lt;p&gt;啊啊啊啊&lt;/p&gt;
+      <title>2</title>
+      <link>/post/2/</link>
+      <pubDate>Sat, 04 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/post/2/</guid>
+      <description>
+
+
+
 </description>
     </item>
     
     <item>
-      <title>够狠</title>
-      <link>/post/%E5%A4%9F%E7%8B%A0/</link>
-      <pubDate>Thu, 26 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>/post/%E5%A4%9F%E7%8B%A0/</guid>
-      <description>&lt;p&gt;日了狗了&lt;/p&gt;
+      <title>贝叶斯滤波与平滑（1-3）</title>
+      <link>/post/bayesian-1-3/</link>
+      <pubDate>Sat, 04 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/post/bayesian-1-3/</guid>
+      <description>
+
+
+&lt;div id=&#34;第一章贝叶斯滤波与平滑&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;第一章、贝叶斯滤波与平滑&lt;/h1&gt;
+&lt;div id=&#34;应用&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;应用&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div id=&#34;起源&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;起源&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div id=&#34;基于最优滤波与平滑的贝叶斯推理&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;基于最优滤波与平滑的贝叶斯推理&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div id=&#34;贝叶斯滤波与平滑&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;贝叶斯滤波与平滑&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div id=&#34;参数估计&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;参数估计&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;第二章贝叶斯推理&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;第二章、贝叶斯推理&lt;/h1&gt;
+&lt;div id=&#34;基本原理&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;基本原理&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div id=&#34;贝叶斯推理与极大似然估计&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;贝叶斯推理与极大似然估计&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div id=&#34;基础构成&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;基础构成&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;先验模型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如初始位置、运动模型&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;量测模型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;参数到量测量的随机映射，就是函数h(x).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;后验分布&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;就是贝叶斯公式&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;预测后验分布&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这可以是未来预测量的理论依据。&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;贝叶斯点估计&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;贝叶斯点估计&lt;/h2&gt;
+&lt;/div&gt;
+&lt;div id=&#34;数值方法&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;数值方法&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 </description>
     </item>
     
@@ -107,19 +164,6 @@
 &lt;p&gt;按照&lt;a href=&#34;https://www.sohu.com/a/220909022_500658&#34;&gt;用R语言的Blogdown+Hugo+Netlify+Github建博客&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;出现的问题主要是：
 &lt;a href=&#34;https://d.cosx.org/d/419791-blogdown-netlify-non-zero-exist-code-255/13&#34;&gt;blogdown: Netlify 部署失败，non-zero exist code:255&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>This is my first blog, but why not exist</title>
-      <link>/post/x/</link>
-      <pubDate>Tue, 24 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>/post/x/</guid>
-      <description>&lt;p&gt;我的天，怎么还不行啊！
-我的天，怎么还不行啊！
-我的天，怎么还不行啊！
-我的天，怎么还不行啊！
-我的天，怎么还不行啊！&lt;/p&gt;
 </description>
     </item>
     
