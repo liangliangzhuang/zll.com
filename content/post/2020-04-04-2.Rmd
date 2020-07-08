@@ -1,7 +1,13 @@
 ---
+<<<<<<< HEAD
 title: '可视化网络数据'
 author: ''
 date: '2020-07-08'
+=======
+title: '2'
+author: ''
+date: '2020-04-04'
+>>>>>>> 759347161f5889729999a4d4090de657ab598ca3
 slug: '2'
 categories: []
 tags: []
@@ -16,6 +22,7 @@ image:
   preview_only: no
 projects: []
 ---
+<<<<<<< HEAD
 
 ### 图网络自学
 
@@ -189,5 +196,7 @@ vertex.color=c(rep("lightblue", 17), "red"))
 
 
 
+=======
+>>>>>>> 759347161f5889729999a4d4090de657ab598ca3
 =======
 >>>>>>> 759347161f5889729999a4d4090de657ab598ca3
