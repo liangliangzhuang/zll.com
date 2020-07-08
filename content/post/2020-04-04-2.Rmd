@@ -1,0 +1,193 @@
+---
+title: '可视化网络数据'
+author: ''
+date: '2020-07-08'
+slug: '2'
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2020-04-04T12:19:40+08:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+### 图网络自学
+
+#### Chapter 3 Visualizing Network Data
+
+
+- Graph Layouts
+```{r message=FALSE, warning=FALSE}
+library(sand)
+```
+
+```{r message=FALSE, warning=FALSE}
+g.l <- graph.lattice(c(5, 5, 5))
+data(aidsblog)
+summary(aidsblog)
+```
+
+
+设置图像 igraph.options
+```{r warning=FALSE}
+igraph.options(vertex.size=3, vertex.label=NA, edge.arrow.size=0.5)
+
+par(mfrow=c(1, 2))
+plot(g.l, layout=layout.circle)
+title("5x5x5 Lattice")
+plot(aidsblog, layout=layout.circle)
+title("Blog Network")  #图标???
+```
+
+
+```{r message=FALSE, warning=FALSE}
+igraph.options(vertex.size=3, vertex.label=NA, edge.arrow.size=0.5)
+plot(g.l, layout=layout.fruchterman.reingold)
+plot(aidsblog, layout=layout.fruchterman.reingold)
+
+```
+
+**layout=**具体内容
+
+|中文意思|对应选项|
+|---:|:---|
+|弹簧式发散布局|layout.fruchterman.reingold|
+|环形布局|layout.circle|
+|分层布局|layout.reingold.tilford|
+|中心向外发散|layout.reingold.tilford(graph,circular=T) |
+|核心布局|layout_as_star|
+|大型网络可视化|layout_with_drl|
+
+
+树图
+```{r message=FALSE, warning=FALSE}
+igraph.options(vertex.size=30, edge.arrow.size=0.5, vertex.label=NULL,vertex.color="lightblue")
+g.tree <- graph.formula(1-+2,1-+3,1-+4,2-+5,2-+6,2-+7,3-+8,3-+9,4-+10)
+par(mfrow=c(1, 3))
+plot(g.tree, layout=layout.circle)  #???
+plot(g.tree, layout=layout.reingold.tilford(g.tree,circular=T))
+plot(g.tree, layout=layout.reingold.tilford)
+```
+
+
+```{r message=FALSE, warning=FALSE}
+plot(g.bip, layout=-layout.bipartite(g.bip)[,2:1],
+     vertex.size=30, vertex.shape=ifelse(V(g.bip)$type,"rectangle", "circle"),
+vertex.color=ifelse(V(g.bip)$type, "red", "cyan"))
+```
+
+`felse`
+
+- Decorating Graph Layouts
+```{r message=FALSE, warning=FALSE}
+library(igraphdata)
+data(karate)
+```
+
+- Reproducible layout
+```{r message=FALSE,warning=FALSE}
+set.seed(42)
+l <- layout.kamada.kawai(karate)
+# Plot undecorated first.
+igraph.options(vertex.size=10)
+par(mfrow=c(1,1))
+plot(karate, layout=l, vertex.label=V(karate))
+# Now decorate, starting with labels.
+V(karate)$label <- sub("Actor ", "", V(karate)$name) #sub减去里面的某些东???
+
+# Two leaders get shapes different from club members.
+V(karate)$shape <- "circle"
+V(karate)[c("Mr Hi", "John A")]$shape <- "rectangle"
+# Differentiate two factions by color.
+V(karate)[Faction == 1]$color <- "red" #Faction属性里???==1的人标为红色
+V(karate)[Faction == 2]$color <- "dodgerblue"
+# Vertex area proportional to vertex strength
+
+```
+
+```{r message=FALSE, warning=FALSE}
+colbar <- c("red", "dodgerblue", "goldenrod")
+v.colors <- colbar[V(lazega)$Office] #office属性里面的数字作为索引
+# Type of practice indicated by vertex shape.
+v.shapes <- c("circle", "square")[V(lazega)$Practice]
+# Vertex size proportional to years with firm.
+v.size <- 3.5*sqrt(V(lazega)$Years) #顶点形状和Years有关，时间越长形状越???
+# Label vertices according to seniority.
+v.label <- V(lazega)$Seniority  
+# Reproducible layout.
+set.seed(42)
+l <- layout.fruchterman.reingold(lazega)
+plot(lazega, layout=l, vertex.color=v.colors,
+vertex.shape=v.shapes, vertex.size=v.size,
+vertex.label=v.label)
+```
+
+- Visualizing Large Networks
+
+该网络由192个博客组成，1431条边连接，后者表明这两个博客中至少有一个引用了另一个
+
+- the standard Kamada–Kawai method.
+
+```{r message=FALSE, warning=FALSE}
+summary(fblog)
+party.names <- sort(unique(V(fblog)$PolParty))
+party.names
+set.seed(42)
+l = layout.kamada.kawai(fblog)
+party.nums.f <- as.factor(V(fblog)$PolParty)
+party.nums <- as.numeric(party.nums.f)
+plot(fblog, layout=l, vertex.label=NA,
+vertex.color=party.nums, vertex.size=3)
+```
+
+- the DrL method
+```{r warning=FALSE}
+set.seed(42)
+l <- layout.drl(fblog)
+plot(fblog, layout=l, vertex.size=5, vertex.label=NA,
+vertex.color=party.nums)
+```
+
+用单个元顶点替换顶点组，可能是有用的
+```{r message=FALSE,warning=FALSE}
+fblog.c <- contract.vertices(fblog, party.nums)
+E(fblog.c)$weight <- 1
+fblog.c <- simplify(fblog.c)
+
+party.size <- as.vector(table(V(fblog)$PolParty))
+plot(fblog.c, vertex.size=5*sqrt(party.size),
+vertex.label=party.names,
+vertex.color=V(fblog.c),
+edge.width=sqrt(E(fblog.c)$weight),
+vertex.label.dist=1.5, edge.arrow.size=0)
+```
+
+- 想看某些子图
+
+```{r message=FALSE,warning=FALSE}
+data(karate)
+k.nbhds <- graph.neighborhood(karate, order=1)
+sapply(k.nbhds, vcount)
+k.1 <- k.nbhds[[1]]
+k.34 <- k.nbhds[[34]]
+par(mfrow=c(1,2))
+plot(k.1, vertex.label=NA,
+vertex.color=c("red", rep("lightblue", 16)))
+plot(k.34, vertex.label=NA,
+vertex.color=c(rep("lightblue", 17), "red"))
+```
+
+
+
+
+
+
+
+=======
+>>>>>>> 759347161f5889729999a4d4090de657ab598ca3
