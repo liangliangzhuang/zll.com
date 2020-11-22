@@ -1,6 +1,6 @@
 ---
 title: 气泡图
-author: ''
+author: '庄闪闪'
 date: '2020-11-15'
 slug: 
 categories: []
@@ -13,7 +13,7 @@ image:
   caption: ''
   focal_point: ''
   preview_only: no
-projects: []
+projects: [R可视乎]
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
@@ -21,8 +21,6 @@ projects: []
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
-<div id="气泡图" class="section level1">
-<h1>气泡图</h1>
 <p>气泡图是一种多变量图表，是散点图的变体，也可以认为是
 <a href="R语言数据可视化之美">散点图和百分比区域图的组合</a>。气泡图最基本的用法是使用三个值来确定每个数据序列，和散点图一样。气泡图通过气泡的位置及面积大小，可分析数据之间的相关性。</p>
 <p>本文可以看作是《R语言数据可视化之美》的学习笔记。前两部分可见（跳转）：</p>
@@ -31,10 +29,6 @@ projects: []
 <li><p><a href="https://mp.weixin.qq.com/s?__biz=MzI1NjUwMjQxMQ==&amp;mid=2247485276&amp;idx=1&amp;sn=f98a2aede13555fa1c372f08c3cdec44&amp;chksm=ea24f8b8dd5371ae9e13f3df41ff73e070775eb1ab871370783bb3f396a0a9c29d42c6a89210&amp;token=682523778&amp;lang=zh_CN#rd">分布显示的二维散点图</a></p></li>
 </ul>
 <p>该书对气泡图的绘制并不是非常详细，小编将内容进行了大量拓展。下面的例子将一步步带你完成气泡图的绘制。本文内容丰富，希望大家都能学到自己想要的内容。</p>
-<div id="本文框架" class="section level2">
-<h2>本文框架</h2>
-<p><img src="https://imgkr2.cn-bj.ufileos.com/b4382ada-392f-4868-be6b-53e619921374.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&amp;Signature=qppb6xaOmm72QdYDTIA9aO34REA%253D&amp;Expires=1605239247" /></p>
-</div>
 <div id="数据介绍" class="section level2">
 <h2>数据介绍</h2>
 <p>数据集来源gapminder包中，包含了1704行和6个变量。其中6个变量含义分别为：</p>
@@ -163,17 +157,10 @@ attach(data1)
 <h2>拓展知识</h2>
 <p>其他扩展可自行学（小编做推送的时候已经学过啦，但是篇幅有限，就没继续整理下去了）</p>
 <ul>
-<li><a href="https://wencke.github.io/" title="GOplot包">GOplot包</a>提供了直接做气泡图的方法，函数是：GOBubble。</li>
+<li><p><a href="https://wencke.github.io/" title="GOplot包">GOplot包</a>提供了直接做气泡图的方法，函数是：GOBubble。</p></li>
+<li><p><a href="https://www.data-to-viz.com/graph/bubble.html" title="BUBBLE PLOT理论定义">BUBBLE PLOT理论定义</a></p></li>
+<li><p><a href="https://plotly.com/r/bubble-charts/" title="plotly包">plotly包</a>绘制可以互动的气泡图</p></li>
 </ul>
-<p><img src="https://imgkr2.cn-bj.ufileos.com/bdf4074a-8cb1-440d-9194-6e8d487e8ae5.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&amp;Signature=190m6qR3V1exwcuPayCDULY0Ios%253D&amp;Expires=1605238660" /></p>
-<ul>
-<li><a href="https://www.data-to-viz.com/graph/bubble.html" title="BUBBLE PLOT理论定义">BUBBLE PLOT理论定义</a></li>
-</ul>
-<p><img src="https://imgkr2.cn-bj.ufileos.com/40810411-d8fc-413f-b665-ece61d55531c.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&amp;Signature=9tj23TfNB23j468EBKqr46wN1Ec%253D&amp;Expires=1605238689" /></p>
-<ul>
-<li><a href="https://plotly.com/r/bubble-charts/" title="plotly包">plotly包</a>绘制可以互动的气泡图</li>
-</ul>
-<p><img src="https://imgkr2.cn-bj.ufileos.com/47d4f17c-9b83-4340-9a09-ad122467565b.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&amp;Signature=2uehzuNnkzKRhgkrmPmOmnEpGWg%253D&amp;Expires=1605238713" /></p>
 </div>
 <div id="r语言数可视化书内代码" class="section level2">
 <h2>R语言数可视化书内代码</h2>
@@ -221,6 +208,5 @@ head(mtcars)</code></pre>
     #legend.position=c(0.9,0.05)
   )</code></pre>
 <p><img src="/post/bubble-plot/bubble_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-</div>
 </div>
 </div>

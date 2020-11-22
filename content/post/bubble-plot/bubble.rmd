@@ -1,22 +1,20 @@
 ---
 title: 气泡图
-author: ''
+author: '庄闪闪'
 date: '2020-11-15'
 slug: 
 categories: []
 tags: []
 subtitle: ''
-summary: ''
+summary: '气泡图是一种多变量图表，是散点图的变体。本文将对气泡图进行详细介绍'
 authors: []
 featured: no
 image:
   caption: ''
   focal_point: ''
   preview_only: no
-projects: []
+projects: [R可视乎]
 ---
-
-# 气泡图
 
 气泡图是一种多变量图表，是散点图的变体，也可以认为是
 [散点图和百分比区域图的组合](R语言数据可视化之美 )。气泡图最基本的用法是使用三个值来确定每个数据序列，和散点图一样。气泡图通过气泡的位置及面积大小，可分析数据之间的相关性。
@@ -28,13 +26,6 @@ projects: []
 - [分布显示的二维散点图](https://mp.weixin.qq.com/s?__biz=MzI1NjUwMjQxMQ==&mid=2247485276&idx=1&sn=f98a2aede13555fa1c372f08c3cdec44&chksm=ea24f8b8dd5371ae9e13f3df41ff73e070775eb1ab871370783bb3f396a0a9c29d42c6a89210&token=682523778&lang=zh_CN#rd)
 
 该书对气泡图的绘制并不是非常详细，小编将内容进行了大量拓展。下面的例子将一步步带你完成气泡图的绘制。本文内容丰富，希望大家都能学到自己想要的内容。
-
-
-## 本文框架
-
-![](https://imgkr2.cn-bj.ufileos.com/b4382ada-392f-4868-be6b-53e619921374.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=qppb6xaOmm72QdYDTIA9aO34REA%253D&Expires=1605239247)
-
-
 
 ## 数据介绍
 
@@ -191,18 +182,11 @@ attach(data1)
 
 - [GOplot包](https://wencke.github.io/ "GOplot包")提供了直接做气泡图的方法，函数是：GOBubble。
 
-
-![](https://imgkr2.cn-bj.ufileos.com/bdf4074a-8cb1-440d-9194-6e8d487e8ae5.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=190m6qR3V1exwcuPayCDULY0Ios%253D&Expires=1605238660)
-
-
 - [BUBBLE PLOT理论定义](https://www.data-to-viz.com/graph/bubble.html "BUBBLE PLOT理论定义")
 
-![](https://imgkr2.cn-bj.ufileos.com/40810411-d8fc-413f-b665-ece61d55531c.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=9tj23TfNB23j468EBKqr46wN1Ec%253D&Expires=1605238689)
 
 - [plotly包](https://plotly.com/r/bubble-charts/ "plotly包")绘制可以互动的气泡图
 
-
-![](https://imgkr2.cn-bj.ufileos.com/47d4f17c-9b83-4340-9a09-ad122467565b.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=2uehzuNnkzKRhgkrmPmOmnEpGWg%253D&Expires=1605238713)
 
 
 ## R语言数可视化书内代码
