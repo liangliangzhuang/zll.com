@@ -21,22 +21,206 @@ projects: []
 <script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
+<div id="气泡图" class="section level1">
+<h1>气泡图</h1>
+<p>气泡图是一种多变量图表，是散点图的变体，也可以认为是
+<a href="R语言数据可视化之美">散点图和百分比区域图的组合</a>。气泡图最基本的用法是使用三个值来确定每个数据序列，和散点图一样。气泡图通过气泡的位置及面积大小，可分析数据之间的相关性。</p>
+<p>本文可以看作是《R语言数据可视化之美》的学习笔记。前两部分可见（跳转）：</p>
+<ul>
+<li><p><a href="https://mp.weixin.qq.com/s?__biz=MzI1NjUwMjQxMQ==&amp;mid=2247485142&amp;idx=1&amp;sn=564bffc9e7765ebae9b9b81a17a188d9&amp;chksm=ea24f932dd5370241a05c75975ff24a34423a8f182bf6c716c8c9ed981788d0492dcb268248a&amp;token=1544929502&amp;lang=zh_CN&amp;scene=21#wechat_redirect">趋势显示的二维散点图</a></p></li>
+<li><p><a href="https://mp.weixin.qq.com/s?__biz=MzI1NjUwMjQxMQ==&amp;mid=2247485276&amp;idx=1&amp;sn=f98a2aede13555fa1c372f08c3cdec44&amp;chksm=ea24f8b8dd5371ae9e13f3df41ff73e070775eb1ab871370783bb3f396a0a9c29d42c6a89210&amp;token=682523778&amp;lang=zh_CN#rd">分布显示的二维散点图</a></p></li>
+</ul>
+<p>该书对气泡图的绘制并不是非常详细，小编将内容进行了大量拓展。下面的例子将一步步带你完成气泡图的绘制。本文内容丰富，希望大家都能学到自己想要的内容。</p>
+<div id="本文框架" class="section level2">
+<h2>本文框架</h2>
+<p><img src="https://imgkr2.cn-bj.ufileos.com/b4382ada-392f-4868-be6b-53e619921374.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&amp;Signature=qppb6xaOmm72QdYDTIA9aO34REA%253D&amp;Expires=1605239247" /></p>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="/post/bubble-plot/bubble_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="数据介绍" class="section level2">
+<h2>数据介绍</h2>
+<p>数据集来源gapminder包中，包含了1704行和6个变量。其中6个变量含义分别为：</p>
+<ul>
+<li><p>country 国家142个水平</p></li>
+<li><p>continent 大陆5个水平</p></li>
+<li><p>year 1952年-2007年（间隔为5年）</p></li>
+<li><p>lifeExp 出生预期寿命，以年计数</p></li>
+<li><p>pop 人口数</p></li>
+<li><p>gdpPercap 人均国内生产总值(扣除通货膨胀因素后的美元)</p></li>
+</ul>
+<p>由于数据过多，我们感兴趣的是年份为2007年的数据，所以使用dplyr包进行数据处理，具体数据处理案例可见我写的另一篇推送：<a href="https://mp.weixin.qq.com/s/ozH-TsltnLwp51i3aDNpSQ">[R数据科学]tidyverse数据清洗案例详解</a>。数据缩略版如下：</p>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)
+library(gapminder)
+data &lt;- gapminder %&gt;% filter(year==&quot;2007&quot;) %&gt;% dplyr::select(-year)</code></pre>
+</div>
+<div id="手把手绘制" class="section level2">
+<h2>手把手绘制</h2>
+<div id="geom_point函数构建" class="section level3">
+<h3>geom_point()函数构建</h3>
+<p>气泡图是添加了第三维度的散点图：附加数值变量的值通过点的大小表示。(来源:<a href="https://www.data-to-viz.com/graph/bubble.html" title="data-to-viz">data-to-viz</a>)。
+使用ggplot2，可以通过<code>geom_point()</code>函数构建气泡图。<code>aes()</code>设定至少三个变量:x、y和size。其实就是散点图绘制的升级版吧，<code>aes()</code>中多了一个参数。</p>
+<pre class="r"><code>ggplot(data, aes(x=gdpPercap, y=lifeExp, size = pop)) +
+    geom_point(alpha=0.7)</code></pre>
+<p><img src="/post/bubble-plot/bubble_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>上图展示了世界各国的预期寿命(y)与人均国内生产总值(x)之间的关系。每个国家的人口用圆的大小表示。但是这个图不是非常美观，而且圆的大小并不是很直观，大家都差不多大。接下来对圆的大小进行设定。</p>
+</div>
+<div id="scale_size控制圆的大小" class="section level3">
+<h3>scale_size()控制圆的大小</h3>
+<p>scale_size()允许使用range参数设置最小和最大的圆的大小，用<code>name</code>改变图例名称(<code>scale_size(range = c(0.1, 24), name="Population (M)")</code>)。</p>
+<ul>
+<li><p>图中可以看到，有些圆圈重叠了。k可将点的透明度进行调整（<code>geom_point(alpha=0.5)</code>）</p></li>
+<li><p>为了避免在图表顶部出现大的圆圈，可以将数据集进行排序(<code>arrange(desc(pop))</code>)，代码如下。</p></li>
+</ul>
+<pre class="r"><code>data %&gt;%
+  arrange(desc(pop)) %&gt;%
+  mutate(country = factor(country)) %&gt;%
+  ggplot(aes(x=gdpPercap, y=lifeExp, size = pop)) +
+    geom_point(alpha=0.5) +
+    scale_size(range = c(.1, 24), name=&quot;Population (M)&quot;)</code></pre>
+<p><img src="/post/bubble-plot/bubble_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>现在图可读性有所提高，但如果数据集中还有一个变量想加入图中该怎么办呢？</p>
+</div>
+<div id="添加第四个维度颜色" class="section level3">
+<h3>添加第四个维度：颜色</h3>
+<p>这里可以用每个国家的洲来控制圆圈的颜色（<code>aes(x=gdpPercap, y=lifeExp, size=pop, color=continent)</code>）:</p>
+<pre class="r"><code>data %&gt;%
+  arrange(desc(pop)) %&gt;%
+  mutate(country = factor(country, country)) %&gt;%
+  ggplot(aes(x=gdpPercap, y=lifeExp, size=pop, color=continent)) +
+    geom_point(alpha=0.5) +
+    scale_size(range = c(.1, 24), name=&quot;Population (M)&quot;)</code></pre>
+<p><img src="/post/bubble-plot/bubble_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>该图基本可以满足我们日常生活的气泡图的可视化了。相信大家通过前面的详细的介绍，应该可以自行绘制，只要换个数据，懂得各个代码的含义即可。后面是图表美化的过程，参考<a href="https://www.r-graph-gallery.com/320-the-basis-of-bubble-plot.html" title="thr R Graph Gallery: Bubble plot with ggplot2">thr R Graph Gallery: Bubble plot with ggplot2</a>。</p>
+</div>
+</div>
+<div id="美化气泡图" class="section level2">
+<h2>美化气泡图</h2>
+<div id="一些经典的改进" class="section level3">
+<h3>一些经典的改进</h3>
+<ul>
+<li><p>使用viridis包的调色板：（<code>scale_fill_viridis(discrete=TRUE, guide=FALSE, option="A")</code>）</p></li>
+<li><p>使用<code>hrbrthemes</code>包的<code>theme_ipsum()</code></p></li>
+<li><p>使用xlab和ylab自定义轴标题</p></li>
+<li><p>为圆添加描边：将形状改为21，并指定颜色(描边)和填充</p></li>
+</ul>
+<pre class="r"><code># Libraries
+library(hrbrthemes)
+library(viridis)
+
+# Most basic bubble plot
+data %&gt;%
+  arrange(desc(pop)) %&gt;%
+  mutate(country = factor(country, country)) %&gt;%
+  ggplot(aes(x=gdpPercap, y=lifeExp, size=pop, fill=continent)) +
+    geom_point(alpha=0.5, shape=21, color=&quot;black&quot;) +
+    scale_size(range = c(.1, 24), name=&quot;Population (M)&quot;) #+</code></pre>
+<p><img src="/post/bubble-plot/bubble_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>    #scale_fill_viridis(discrete=TRUE, guide=FALSE, option=&quot;A&quot;) +
+    #theme_ipsum() +
+    #theme(legend.position=&quot;bottom&quot;) +
+    #ylab(&quot;Life Expectancy&quot;) +
+    #xlab(&quot;欢迎关注：庄闪闪的成长手册 \nq  Gdp per Capita&quot;) +
+    #theme(legend.position = &quot;none&quot;)</code></pre>
+</div>
+<div id="带数据标签" class="section level3">
+<h3>带数据标签</h3>
+<p>这里使用ggrepel包中的(<code>geom_text_repel()</code>)，可以给每个点自动加入标签，我这里是加入了各个国家名字，其他可以根据你实际需求进行设置。</p>
+<pre class="r"><code>library(ggrepel)
+library(viridis)
+library(hrbrthemes)
+data1 = data %&gt;%
+  mutate(country = factor(country)) %&gt;% head(20)
+attach(data1)
+  ggplot(data1,aes(x=gdpPercap, y=lifeExp, size=pop, fill=continent)) +
+    geom_point(alpha=0.5, shape=21, color=&quot;black&quot;) +
+    scale_size(range = c(.1, 24), name=&quot;Population (M)&quot;) +
+    geom_text_repel(label = country,size=5)#+</code></pre>
+<p><img src="/post/bubble-plot/bubble_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>    #scale_fill_viridis(discrete=TRUE, guide=FALSE, option=&quot;A&quot;) +
+    #theme_ipsum() +
+    #theme(legend.position=&quot;bottom&quot;) #+
+    #ylab(&quot;Life Expectancy&quot;) +
+    #xlab(&quot;欢迎关注：庄闪闪的成长手册 \nq  Gdp per Capita&quot;) +
+    #theme(legend.position = &quot;none&quot;)</code></pre>
+<p>如果不喜欢圆形的气泡图，可以将代码中的<code>shape=21</code>进行更改，正方形是<code>shape=22</code>，得到的图如下：</p>
+<pre class="r"><code>library(ggrepel)
+data1 = data %&gt;%
+  mutate(country = factor(country)) %&gt;% head(20)
+attach(data1)
+  ggplot(data1,aes(x=gdpPercap, y=lifeExp, size=pop, fill=continent)) +
+    geom_point(alpha=0.5, shape=22, color=&quot;black&quot;) +
+    scale_size(range = c(.1, 24), name=&quot;Population (M)&quot;) +
+    geom_text_repel(label = country,size=5)+
+    scale_fill_viridis(discrete=TRUE, guide=FALSE, option=&quot;A&quot;) #+</code></pre>
+<p><img src="/post/bubble-plot/bubble_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>    #theme_ipsum() +
+    #theme(legend.position=&quot;bottom&quot;) +
+    #ylab(&quot;Life Expectancy&quot;) +
+    #xlab(&quot;欢迎关注：庄闪闪的成长手册 \nq  Gdp per Capita&quot;) +
+    #theme(legend.position = &quot;none&quot;)</code></pre>
+</div>
+</div>
+<div id="拓展知识" class="section level2">
+<h2>拓展知识</h2>
+<p>其他扩展可自行学（小编做推送的时候已经学过啦，但是篇幅有限，就没继续整理下去了）</p>
+<ul>
+<li><a href="https://wencke.github.io/" title="GOplot包">GOplot包</a>提供了直接做气泡图的方法，函数是：GOBubble。</li>
+</ul>
+<p><img src="https://imgkr2.cn-bj.ufileos.com/bdf4074a-8cb1-440d-9194-6e8d487e8ae5.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&amp;Signature=190m6qR3V1exwcuPayCDULY0Ios%253D&amp;Expires=1605238660" /></p>
+<ul>
+<li><a href="https://www.data-to-viz.com/graph/bubble.html" title="BUBBLE PLOT理论定义">BUBBLE PLOT理论定义</a></li>
+</ul>
+<p><img src="https://imgkr2.cn-bj.ufileos.com/40810411-d8fc-413f-b665-ece61d55531c.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&amp;Signature=9tj23TfNB23j468EBKqr46wN1Ec%253D&amp;Expires=1605238689" /></p>
+<ul>
+<li><a href="https://plotly.com/r/bubble-charts/" title="plotly包">plotly包</a>绘制可以互动的气泡图</li>
+</ul>
+<p><img src="https://imgkr2.cn-bj.ufileos.com/47d4f17c-9b83-4340-9a09-ad122467565b.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&amp;Signature=2uehzuNnkzKRhgkrmPmOmnEpGWg%253D&amp;Expires=1605238713" /></p>
+</div>
+<div id="r语言数可视化书内代码" class="section level2">
+<h2>R语言数可视化书内代码</h2>
+<pre class="r"><code>library(ggplot2)
+library(RColorBrewer)
+library(ggrepel)
+attach(mtcars)
+head(mtcars)</code></pre>
+<pre><code>##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</code></pre>
+<div id="带数据标签的气泡图" class="section level3">
+<h3>带数据标签的气泡图</h3>
+<pre class="r"><code> ggplot(data=mtcars, aes(x=wt,y=mpg))+
+   geom_point(aes(size=disp,fill=disp),shape=21,colour=&quot;black&quot;,alpha=0.8)+
+   scale_fill_gradient2(low=&quot;#377EB8&quot;,high=&quot;#E41A1C&quot;,midpoint = mean(mtcars$disp))+
+   geom_text_repel(label = disp )+
+   scale_size_area(max_size=12)+
+   guides(size = guide_legend((title=&quot;Value&quot;)),
+          fill = guide_legend((title=&quot;Value&quot;)))+
+   theme(
+     legend.text=element_text(size=10,face=&quot;plain&quot;,color=&quot;black&quot;),
+     axis.title=element_text(size=10,face=&quot;plain&quot;,color=&quot;black&quot;),
+     axis.text = element_text(size=10,face=&quot;plain&quot;,color=&quot;black&quot;),
+     legend.position = &quot;right&quot;
+   )</code></pre>
+<p><img src="/post/bubble-plot/bubble_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="方块状的气泡图" class="section level3">
+<h3>方块状的气泡图</h3>
+<pre class="r"><code>ggplot(mtcars, aes(wt,mpg))+
+  geom_point(aes(size=disp,fill=disp),shape=22,colour=&quot;black&quot;,alpha=0.8)+
+  scale_fill_gradient2(low=brewer.pal(7,&quot;Set1&quot;)[2],high=brewer.pal(7,&quot;Set1&quot;)[1],
+                       midpoint = mean(mtcars$disp))+
+  scale_size_area(max_size=12)+
+  guides(fill = guide_legend((title=&quot;Value&quot;)),
+         size =  guide_legend((title=&quot;Value&quot;)))+
+  theme(
+    text=element_text(size=15,color=&quot;black&quot;),
+    plot.title=element_text(size=15,family=&quot;myfont&quot;,face=&quot;bold.italic&quot;,color=&quot;black&quot;)#,
+    #legend.position=c(0.9,0.05)
+  )</code></pre>
+<p><img src="/post/bubble-plot/bubble_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+</div>
 </div>

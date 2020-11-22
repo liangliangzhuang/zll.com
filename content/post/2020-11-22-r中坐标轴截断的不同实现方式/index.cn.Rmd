@@ -1,14 +1,14 @@
 ---
 title: R中坐标轴截断的不同实现方式
 author: 庄闪闪
-date: '2020-11-22'
+date: '2020-7-22'
 slug: []
-categories: []
+categories: [R可视乎]
 tags:
   - Rplot
 subtitle: ''
 summary: ''
-authors: []
+authors: [坐标轴截断的不同实现方式基于R实现]
 lastmod: '2020-11-22T21:28:47+08:00'
 featured: no
 image:
