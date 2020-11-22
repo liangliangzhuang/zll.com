@@ -14,6 +14,8 @@ image:
   focal_point: ''
   preview_only: no
 projects: [R可视乎]
+number_sections: yes
+toc: yes
 ---
 
 气泡图是一种多变量图表，是散点图的变体，也可以认为是
