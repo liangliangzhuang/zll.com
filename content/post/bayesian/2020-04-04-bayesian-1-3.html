@@ -3,10 +3,12 @@ title: 贝叶斯滤波与平滑（1）
 author: ''
 date: '2020-04-04'
 slug: bayesian-1-3
-categories: []
-tags: []
+categories:
+  - R可视乎
+tags: 
+  - Rplot
 subtitle: ''
-summary: ''
+summary: '贝叶斯滤波与平滑'
 authors: []
 lastmod: '2020-04-04T11:12:47+08:00'
 featured: no
@@ -75,8 +77,8 @@ yes
 </div>
 <div id="基于最优滤波与平滑的贝叶斯推理" class="section level2">
 <h2>基于最优滤波与平滑的贝叶斯推理</h2>
-<p>最优滤波和平滑被认为是统计反演问题：
-<img src="1.jpg" />
+<p>最优滤波和平滑被认为是统计反演问题：</p>
+<p><img src="1.jpg" />
 我们现在知道的是观察值<span class="math inline">\(y_{1},\dots,y_{T}\)</span>,目的是估计出<span class="math inline">\(x_{1},\dots,x_{T}\)</span>。但是观察的<span class="math inline">\(y\)</span>存在测量误差的影响。从贝叶斯的角度来说就是已知所有测量去计算所有状态的联合后验分布。理论上通过贝叶斯公式就可以得到的。</p>
 <p>但是完整的后验分布公式存在一个严重的缺点：当获得新的测量值时，整个后验分布都要重新计算，而在动态估计中，这个问题很严重。随着时间步长增加，完整的后验分布维数也会增加。</p>
 <p>于是我们将条件放宽，只需计满足特定状态的边缘分布时，计算量就少了一个数量级，我们将动态模型限定为<strong>马尔可夫序列</strong>。在贝叶斯滤波和平滑中，用边缘分布代替完整的联合分布。</p>

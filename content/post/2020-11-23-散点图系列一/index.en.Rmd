@@ -203,3 +203,22 @@ ggplot(mydata, aes(x, y)) + geom_image(aes(image=image))+
 ```
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
