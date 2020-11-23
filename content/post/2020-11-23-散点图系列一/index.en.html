@@ -1,0 +1,159 @@
+---
+title: 散点图系列一
+author: 庄闪闪
+date: '2020-11-23'
+slug: []
+categories:
+  - R可视乎
+tags:
+  - Rplot
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2020-11-23T12:43:52+08:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="简介" class="section level2">
+<h2>简介</h2>
+<p><strong>散点图</strong>（scatter graph、point graph、X-Y plot、scatter chart ）是科研绘图中最常见的图表类型之一，通常用于显示和比较数值。散点图是使用一系列的散点在直角坐标系中展示变量的数值分布。在二维散点图中，可以通过观察两个变量的数据变化，发现两者的关系与相关性。</p>
+<p>散点图可以提供三类关键信息：</p>
+<p>（1）变量之间是否存在数量关联趋势；</p>
+<p>（2）如果存在关联趋势，那么其是线性还是非线性的；</p>
+<p>（3）观察是否有存在离群值，从而分析这些离群值对建模分析的影响。</p>
+<hr />
+<p>本文可以看作是<a href="https://github.com/EasyChart/Beautiful-Visualization-with-R" title="《R语言数据可视化之美》">《R语言数据可视化之美》</a>的学习笔记。该书第四章——<strong>数据关系型图表</strong>中展示的散点图系列包括以下四个方面：</p>
+<ol style="list-style-type: decimal">
+<li><p>趋势显示的二维散点图</p></li>
+<li><p>分布显示的二维散点图</p></li>
+<li><p>气泡图</p></li>
+<li><p>三维散点图</p></li>
+</ol>
+<p>本文主要对第一部分进行介绍，并加上小编自己的理解。下面几个部分也会在这星期陆续推出，敬请关注。</p>
+</div>
+<div id="数据介绍" class="section level2">
+<h2>2.数据介绍</h2>
+<p>随机产生2列20行的数据，列名分别为x，y。x为序号，y由标准正态分布中产生。</p>
+<pre class="r"><code>library(ggplot2)
+mydata = data.frame(&#39;x&#39;= 1:20,&#39;y&#39;=sort(rnorm(20)))
+head(mydata)</code></pre>
+<pre><code>##   x          y
+## 1 1 -3.6649594
+## 2 2 -2.4539980
+## 3 3 -2.3880659
+## 4 4 -1.7249528
+## 5 5 -1.5061393
+## 6 6 -0.8368497</code></pre>
+</div>
+<div id="不同类型拟合曲线的绘制" class="section level2">
+<h2>3. 不同类型拟合曲线的绘制</h2>
+<div id="loess数据平滑曲线" class="section level3">
+<h3>3.1 loess数据平滑曲线</h3>
+<p><strong>局部加权回归</strong>（Locally Weighted Scatterplot Smoothing，LOESS）主要思想是取一定比例的局部数据，在这部分子集中拟合多项式回归曲线，这样就可以观察到数据在局部展现出来的规律和趋势。曲线的光滑程度与选取数据比例有关：比例越少，拟合越不光滑，反之越光滑。</p>
+<p>ggplot2绘制时，使用<code>geom_point</code>绘制散点图，<code>geom_smooth</code>加入拟合曲线，<code>method</code>选择为loess,<code>se=TRUE</code>表示加入置信带，<code>span</code>控制loess平滑的平滑量，较小的数字产生波动线，较大的数字产生平滑线。其他参数对颜色，填充色以及透明度进行了修改。</p>
+<pre class="r"><code>ggplot(data = mydata, aes(x,y)) +
+geom_point(fill=&quot;black&quot;,colour=&quot;black&quot;,size=3,shape=21) +
+geom_smooth(method = &#39;loess&#39;,span=0.4,se=TRUE,
+colour=&quot;#00A5FF&quot;,fill=&quot;#00A5FF&quot;,alpha=0.2)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/post/2020-11-23-散点图系列一/index.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="样条数据平滑曲线" class="section level3">
+<h3>3.2 样条数据平滑曲线</h3>
+<p>这里使用了splines包中的样条函数，df=5，样条具有五个基函数，其他参数变化不大。具体非线性模型相关资料可参考：<a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e9%87%8c%e7%9a%84%e9%9d%9e%e7%ba%bf%e6%80%a7%e6%a8%a1%e5%9e%8b%ef%bc%9a%e5%a4%9a%e9%a1%b9%e5%bc%8f%e5%9b%9e%e5%bd%92%e3%80%81%e5%b1%80%e9%83%a8%e6%a0%b7%e6%9d%a1%e3%80%81%e5%b9%b3/" title="R语言里的非线性模型：多项式回归、局部样条、平滑样条、广义加性模型分析">R语言里的非线性模型：多项式回归、局部样条、平滑样条、广义加性模型分析</a></p>
+<pre class="r"><code>ggplot(data = mydata, aes(x,y)) +
+geom_point(fill=&quot;black&quot;,colour=&quot;black&quot;,size=3,shape=21) +
+geom_smooth(method=&quot;lm&quot;,se=TRUE,
+formula=y ~ splines::bs(x, 5),colour=&quot;red&quot;)</code></pre>
+<p><img src="/post/2020-11-23-散点图系列一/index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="gam-数据平滑曲线" class="section level3">
+<h3>3.3 GAM 数据平滑曲线</h3>
+<p>GAM 模型的拟合是通过一个迭代过程（向后拟合算法）对每个预测变量进行样条平滑的。其算法要在拟合误差和自由度之间进行权衡最终达到最优。</p>
+<pre class="r"><code>ggplot(data = mydata, aes(x,y)) +
+geom_point(fill=&quot;black&quot;,colour=&quot;black&quot;,size=3,shape=21) +
+geom_smooth(method = &#39;gam&#39;,formula=y ~s(x))</code></pre>
+<p><img src="/post/2020-11-23-散点图系列一/index.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+</div>
+<div id="残差分析图" class="section level2">
+<h2>4. 残差分析图</h2>
+<p><strong>残差分析</strong>（residual analysis）就是通过残差所提供
+的信息，分析出数据的可靠性、周期性或其他干扰。用于分析模型的假定正确与否的方法。所谓残
+差是指观测值与预测值（拟合值）之间的差，即实际观察值与回归估计值的差。以下给出两种拟合方法的残差分析图。<strong>注意：</strong> 这里还是使用前面随机模拟产生的数据。</p>
+<div id="线性拟合" class="section level3">
+<h3>4.1 线性拟合</h3>
+<p>通过lm函数进行回归分析，公式为 <span class="math inline">\(y = ax+b\)</span>。并将预测值 <span class="math inline">\(\hat{y}\)</span>，残差<span class="math inline">\(\varepsilon\)</span>，残差的绝对值<span class="math inline">\(|\varepsilon|\)</span>进行存储，结果如下所示。</p>
+<pre class="r"><code>fit &lt;- lm(y ~ x, data = mydata)
+mydata$predicted &lt;- predict(fit) # Save the predicted values
+mydata$residuals &lt;- residuals(fit) # Save the residual values
+mydata$Abs_Residuals &lt;- abs(mydata$residuals)
+head(mydata)</code></pre>
+<pre><code>##   x          y predicted  residuals Abs_Residuals
+## 1 1 -3.6649594 -2.576727 -1.0882326     1.0882326
+## 2 2 -2.4539980 -2.349089 -0.1049086     0.1049086
+## 3 3 -2.3880659 -2.121452 -0.2666139     0.2666139
+## 4 4 -1.7249528 -1.893815  0.1688618     0.1688618
+## 5 5 -1.5061393 -1.666177  0.1600378     0.1600378
+## 6 6 -0.8368497 -1.438540  0.6016900     0.6016900</code></pre>
+<p>完整代码如下所示：</p>
+<div id="代码详解" class="section level4">
+<h4>代码详解</h4>
+<p>绘制的方式比较简单，根据ggplot的思想不断叠加图层。我们对以下代码进行详细分析：</p>
+<ol style="list-style-type: decimal">
+<li><p>以x为横坐标，y为纵坐标，<code>geom_point()</code>绘制散点图，以Abs_Residuals的大小来填充点和尺寸，颜色为黑色。<code>scale_fill_continuous()</code>将填充色从“black”到“red”渐变。<code>geom_smooth()</code>给数据加入拟合曲线，这里使用<code>lm()</code>方法，置信带不展示，颜色为“lightgrey”。这时候的图形如下：</p></li>
+<li><p>将预测值的点进行绘制，<code>geom_segment()</code>可加入线段，其中<code>xend = x, yend = predicted</code>表示从x到x，y到predicted，所以就会产生下图中的竖直线了。</p></li>
+<li><p>这时残差图基本完成，但是可以看到横纵坐标的标题有问题，右边的legend太累赘了以及字体颜色和大小还可以再做修改。最后图形如下所示：</p></li>
+</ol>
+</div>
+</div>
+<div id="非线性拟合" class="section level3">
+<h3>4.2 非线性拟合</h3>
+<p>非线性拟合绘制残差图与线性拟合类似，唯一不同的点在：利用lm函数拟合不同的回归模型，以下使用了公式：<span class="math inline">\(y = ax+bx^2+c\)</span>，后面的绘制与上面相同。</p>
+<pre class="r"><code>d&lt;-mydata
+fit &lt;- lm(y ~ x+I(x^2), data = d)
+d$predicted &lt;- predict(fit) 
+d$residuals0 &lt;- residuals(fit)
+d$Residuals&lt;-abs(d$residuals0 )</code></pre>
+<pre class="r"><code>ggplot(d, aes(x = x, y = y)) +
+geom_smooth(method = &quot;lm&quot;,formula = y ~ x+I(x^2), se = FALSE, color = &quot;lightgrey&quot;) +
+geom_segment(aes(xend = x, yend = predicted), alpha = .2) +
+geom_point(aes(fill =Residuals, size = Residuals),shape=21,colour=&quot;black&quot;) + # size also mapped
+scale_fill_continuous(low = &quot;black&quot;, high = &quot;red&quot;) +
+geom_point(aes(y = predicted), shape = 1) +
+xlab(&quot;X-Axis&quot;)+ ylab(&quot;Y-Axis&quot;)+
+geom_point(aes(y = predicted), shape = 1) +
+guides(fill = guide_legend((title=&quot;Rresidual&quot;)),
+size = guide_legend((title=&quot;Rresidual&quot;)))+
+theme(text=element_text(size=15,face=&quot;plain&quot;,color=&quot;black&quot;),
+axis.title=element_text(size=10,face=&quot;plain&quot;,color=&quot;black&quot;),
+axis.text = element_text(size=10,face=&quot;plain&quot;,color=&quot;black&quot;),
+legend.position = &quot;right&quot;,
+legend.title = element_text(size=13,face=&quot;plain&quot;,color=&quot;black&quot;),
+legend.text = element_text(size=10,face=&quot;plain&quot;,color=&quot;black&quot;),
+legend.background = element_rect(fill=alpha(&quot;white&quot;,0)))</code></pre>
+<p><img src="/post/2020-11-23-散点图系列一/index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>这两个图采用黑色到红色渐变颜色和气泡面积大小两个视觉暗示对应残差的绝对值大小，用于实际数据点的表示；而拟合数据点则用小空心圆圈表示，并放置在灰色的拟合曲线上。用直线连接实际数据点和拟合数据点。残差的绝对值越大，颜色越红、气泡也越大，连接直线越长，这样可以很清晰地观察数据的拟合效果。</p>
+</div>
+<div id="有趣的拓展" class="section level3">
+<h3>4.3 有趣的拓展</h3>
+<p>R 中的<a href="https://cran.r-project.org/web/packages/ggimage/vignettes/ggimage.html" title="ggimage">ggimage</a>包提供了<code>geom_image()</code>函数可以将对应的圆形数据点使用图片替代展示。我们将其运用到上面的数据集中，就可以得到有趣的图了。</p>
+<pre class="r"><code>library(ggimage)</code></pre>
+<pre><code>## Warning: 程辑包&#39;ggimage&#39;是用R版本4.0.3 来建造的</code></pre>
+<pre class="r"><code>mydata$image = &quot;https://www.r-project.org/logo/Rlogo.png&quot;
+ggplot(mydata, aes(x, y)) + geom_image(aes(image=image))+
+  geom_smooth(method = &#39;lm&#39;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/post/2020-11-23-散点图系列一/index.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+</div>
