@@ -10,7 +10,6 @@ tags:
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2020-11-24'
 featured: no
 image:
   caption: ''
