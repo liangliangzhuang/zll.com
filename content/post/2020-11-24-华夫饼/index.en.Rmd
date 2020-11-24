@@ -10,7 +10,7 @@ tags:
 subtitle: ''
 summary: ''
 authors: []
-lastmod: '2020-11-24T21:13:22+08:00'
+lastmod: '2020-11-24'
 featured: no
 image:
   caption: ''
