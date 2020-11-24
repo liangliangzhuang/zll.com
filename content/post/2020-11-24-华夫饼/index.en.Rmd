@@ -1,0 +1,171 @@
+---
+title: 华夫饼
+author: 庄闪闪
+date: '2020-11-24'
+slug: []
+categories:
+  - R可视乎
+tags:
+  - Rplot
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2020-11-24T21:13:22+08:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+华夫饼图分为块状华夫饼图和点状华夫饼图。块状华夫饼图（waffle chart）是展示总数据的组类别情况的一种有效图表。华夫饼是西方的一种由小方格组成的面包，所以这种图表因此得名为华夫饼图。
+
+块状华夫饼图的小方格用不同颜色表示不同类别，适合用来快速检视数据集中不同类别的分布和比例，并与其他数据集的分布和比例进行比较，让人更容易找出当中模式。块状华夫饼图主要包括侧重展示**类别数值的堆积型块状华夫饼图**和侧重展示**类别占比的百分百堆积型块状华夫饼图**
+
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+library(RColorBrewer)  
+library(reshape2)
+
+nrows <- 10
+categ_table <- round(table(mpg$class ) * ((nrows*nrows)/(length(mpg$class))))
+sort_table<-sort(categ_table,index.return=TRUE,decreasing = FALSE)
+Order<-sort(as.data.frame(categ_table)$Freq,index.return=TRUE,decreasing = FALSE)
+df <- expand.grid(y = 1:nrows, x = 1:nrows)
+df$category<-factor(rep(names(sort_table),sort_table), levels=names(sort_table))
+Color<-brewer.pal(length(sort_table), "Set2")
+head(df)
+df$x
+```
+
+```{r message=FALSE, warning=FALSE}
+ggplot(df, aes(x = y, y = x, fill = category)) + 
+  geom_tile(color = "white", size = 0.25) +
+  #geom_point(color = "black",shape=1,size=5) + 
+  coord_fixed(ratio = 1)+ #x,y轴尺寸固定，ratio=1表示x，y轴长度相同
+  scale_x_continuous(trans = 'reverse') +#expand = c(0, 0),
+  scale_y_continuous(trans = 'reverse') +#expand = c(0, 0),
+  scale_fill_manual(name = "Category", 
+                    #labels = names(sort_table),
+                    values = Color)+
+  theme(#panel.border = element_rect(fill=NA,size = 2),
+    panel.background  = element_blank(),
+    plot.title = element_text(size = rel(1.2)),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "right")
+```
+
+点状华夫饼图（dot matrix chart）以点为单位显示离散数据，每种颜色的点表示一个特定类别，并以矩阵形式组合在一起，适合用来快速检视数据集中不同类别的分布和比例，并与其他数据集的分布和比例进行比较，让人更容易找出当中模式。当只有一个变量/类别时（所有点都是相同颜色），点状华夫饼图相当于比例面积图
+```{r message=FALSE, warning=FALSE}
+library(ggforce)
+ggplot(df, aes(x0 = y, y0 = x, fill = category,r=0.5)) + 
+  geom_circle(color = "black", size = 0.25) +
+  #geom_point(color = "black",shape=21,size=6) + 
+  coord_fixed(ratio = 1)+
+  scale_x_continuous(trans = 'reverse') +#expand = c(0, 0),
+  scale_y_continuous(trans = 'reverse') +#expand = c(0, 0),
+  scale_fill_manual(name = "Category", 
+                    #labels = names(sort_table),
+                    values = Color)+
+  theme(#panel.border = element_rect(fill=NA,size = 2),
+    panel.background  = element_blank(),
+    plot.title = element_text(size = rel(1.2)),
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "right")
+
+```
+
+堆积型
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+nrows <- 10
+ndeep <- 10
+unit<-100
+df <- expand.grid(y = 1:nrows, x = 1:nrows)
+
+categ_table <- as.data.frame(table(mpg$class) * (nrows*nrows))
+colnames(categ_table)<-c("names","vals")
+categ_table<-arrange(categ_table,desc(vals))
+categ_table$vals<-categ_table$vals /unit
+
+
+tb4waffles <- expand.grid(y = 1:ndeep,x = seq_len(ceiling(sum(categ_table$vals) / ndeep)))
+regionvec <- as.character(rep(categ_table$names, categ_table$vals))
+tb4waffles<-tb4waffles[1:length(regionvec),]
+
+tb4waffles$names <- factor(regionvec,levels=categ_table$names)
+
+Color<-brewer.pal(nrow(categ_table), "Set2")
+```
+
+
+
+```{r message=FALSE, warning=FALSE}
+ggplot(tb4waffles, aes(x = x, y = y, fill = names)) + 
+  #geom_tile(color = "white") + # 
+  geom_point(color = "black",shape=21,size=5) + # 
+  scale_fill_manual(name = "Category", 
+                    values = Color)+
+  xlab("1 square = 100")+
+  ylab("")+
+  coord_fixed(ratio = 1)+
+  theme(#panel.border = element_rect(fill=NA,size = 2),
+         panel.background  = element_blank(),
+        plot.title = element_text(size = rel(1.2)),
+        #axis.text = element_blank(),
+        #axis.title = element_blank(),
+        #axis.ticks = element_blank(),
+        # legend.title = element_blank(),
+        legend.position = "right")
+```
+
+```{r message=FALSE, warning=FALSE}
+library(ggforce)
+
+ggplot(tb4waffles, aes(x0 = x, y0 = y, fill = names,r=0.5)) + 
+  #geom_tile(color = "white") + # 
+  geom_circle(color = "black",size=0.25) + # 
+  scale_fill_manual(name = "Category", 
+                    values = Color)+
+  xlab("1 square = 100")+
+  ylab("")+
+  coord_fixed(ratio = 1)+
+  theme(#panel.border = element_rect(fill=NA,size = 2),
+    panel.background  = element_blank(),
+    plot.title = element_text(size = rel(1.2)),
+    #axis.text = element_blank(),
+    #axis.title = element_blank(),
+    #axis.ticks = element_blank(),
+    # legend.title3 = element_blank(),
+    legend.position = "right")
+```
+
+## waffle 包绘制
+
+
+```{r}
+library(waffle)
+savings <- c(`Mortgage ($84,911)`=84911, `Auto andntuition loans ($14,414)`=14414, 
+             `Home equity loans ($10,062)`=10062, `Credit Cards ($8,565)`=8565)
+waffle(savings/392, rows=7, size=0.5, 
+       colors=c("#c7d4b6", "#a3aabd", "#a0d0de", "#97b5cf"), 
+       title="Average Household Savings Each Year", 
+       xlab="1 square == $392")
+```
+
+
+```{r}
+parts <- c(One=80, Two=30, Three=20, Four=10)
+chart <- waffle(parts, rows=8,
+  colors=c("#c7d4b6", "#a3aabd", "#a0d0de", "#97b5cf"),
+  title="庄闪闪的成长手册")
+print(chart)
+```
+
